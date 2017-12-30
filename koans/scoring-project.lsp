@@ -49,9 +49,31 @@
 ;
 ; Your goal is to write the score method.
 
+;;reformat for more than tests
 (defun score (dice)
-  ; You need to write this method
-)
+  (reduce #'+
+	  (mapcar #'(lambda(x)
+		      (let ((amt (count x dice)))
+			(setq val 0)
+			(cond
+			  ;; ((= x 1)(progn
+			  ;; 	    (cond ((>= amt 3) (progn
+			  ;; 				(setq val (+ val 1000))
+			  ;; 				(setq val (+ val (* (mod amt 3) 100))))))))
+			      ((and (= x 1)(>= amt 3))(setq val (+ val 1000)))
+			      ((and (= x 1)(< amt 3))(setq val(+ val (* amt 100))))
+			      ;; ((and (not (= x 1))(>= amt 3))(setq val (+ val (* 100 x))))
+			      ;; ((= x 5)(setq val (+ val (* (mod amt 3) 50)))) 
+			      ((and (= x 5)(< amt 3))( setq val(+ val (* 50 amt))))
+			      ((and (= x 5)(>= amt 3))( setq val (+ 500 (* (mod amt 3) 50))))
+			      (t 0)
+			      )
+			))
+		  (remove-duplicates dice)
+		  )
+	  )
+  )
+
 
 (define-test test-score-of-an-empty-list-is-zero
     (assert-equal 0 (score nil)))
