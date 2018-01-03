@@ -66,6 +66,7 @@
 			      ;; ((= x 5)(setq val (+ val (* (mod amt 3) 50)))) 
 			      ((and (= x 5)(< amt 3))( setq val(+ val (* 50 amt))))
 			      ((and (= x 5)(>= amt 3))( setq val (+ 500 (* (mod amt 3) 50))))
+			      ((and (not(= x 5))(not(= x 1))(>= amt 3))(setq val (* 100 x)))
 			      (t 0)
 			      )
 			))
