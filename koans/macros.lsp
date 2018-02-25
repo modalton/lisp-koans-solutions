@@ -121,8 +121,8 @@
   "log-form does not interfere with the usual return value"
   (assert-equal 1978 (log-form (* 2 23 43)))
   "log-form records the code which it has been passed"
-  (assert-equal 3 (length *log*))
-  (assert-equal 2 (first *log*))
+  (assert-equal 1 (length *log*))
+  (assert-equal '(* 2 23 43) (first *log*))
   "macros evaluating to more macros is ok, if confusing"
   (assert-equal 35 (log-form (log-form (- 2013 1978))))
   (assert-equal 3 (length *log*))
@@ -135,15 +135,12 @@
 (defvar *log-with-value* nil)
 
 ;; you must write this macro
-(defmacro log-form-with-value (form)
+(defmacro log-form-with-value (&body body)
   "records the body form, and the form's return value
    to the list *log-with-value* and then evalues the body normally"
   `(let ((logform nil)
-         (retval ,form))
-
-;;     (push (list :form ',form :value retval) *log-with-value*)
-     (push (list :form ',@form :value retval) *log-with-value*)
-
+         (retval ,@body))
+     (push (list :form ',@body :value retval) *log-with-value*)
      
      retval))
 
