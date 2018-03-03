@@ -44,14 +44,14 @@
     (assert-equal *greeting* "hello world")
     (setf greeting-thread (sb-thread:make-thread #'sets-socal-greeting))
     (sb-thread:join-thread greeting-thread)
-    (assert-equal *greeting* ____)))
+    (assert-equal *greeting* "Sup, dudes")))
 
 
 (define-test test-join-thread-return-value
     "the return value of the thread is passed in sb-thread:join-thread"
   (let ((my-thread (sb-thread:make-thread
                     (lambda () (* 11 99)))))
-    (assert-equal ____ (sb-thread:join-thread my-thread))))
+    (assert-equal 1089 (sb-thread:join-thread my-thread))))
 
 
 (define-test test-threads-can-have-names
@@ -61,7 +61,7 @@
          (sb-thread:make-thread #'+
                                 :name "what is the sum of no things adding?")))
     (assert-equal (sb-thread:thread-name empty-plus-thread)
-                  ____)))
+                  "what is the sum of no things adding?")))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -84,7 +84,7 @@
                   (sb-thread:join-thread
                    (sb-thread:make-thread 'returns-hello-name
                                           :arguments "Buster")))
-    (assert-equal ____
+    (assert-equal '((3 4 5))
                   (sb-thread:join-thread
                    (sb-thread:make-thread 'double-wrap-list
                                           :arguments '(3 4 5)))))
