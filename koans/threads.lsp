@@ -172,12 +172,12 @@
   (assert-equal 1 (length (sb-thread:list-all-threads)))
   (kill-thread-if-not-main (spawn-looping-thread "NEVER CATCH ME~!  NYA NYA!"))
   (sleep 0.01)
-  (assert-equal nil (length (sb-thread:list-all-threads)))
+  (assert-equal 1 (length (sb-thread:list-all-threads)))
   (spawn-three-loopers)
-  (assert-equal ___ (length (sb-thread:list-all-threads)))
+  (assert-equal 4 (length (sb-thread:list-all-threads)))
   (kill-spawned-threads)
   (sleep 0.01)
-  (assert-equal ___ (length (sb-thread:list-all-threads))))
+  (assert-equal 1 (length (sb-thread:list-all-threads))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -193,12 +193,12 @@
     "bindings are not inherited across threads"
   (let ((thread-ret-val (sb-thread:join-thread
                          (sb-thread:make-thread 'returns-v))))
-    (assert-equal thread-ret-val ____))
+    (assert-equal thread-ret-val 0))
   (let ((*v* "LEXICAL BOUND VALUE"))
-    (assert-equal *v* ____)
+    (assert-equal *v* "LEXICAL BOUND VALUE")
     (let ((thread-ret-val (sb-thread:join-thread
                            (sb-thread:make-thread 'returns-v))))
-      (assert-equal thread-ret-val ____))))
+      (assert-equal thread-ret-val 0))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -221,7 +221,7 @@
   (waits-and-increments-g)
   (waits-and-increments-g)
   (waits-and-increments-g)
-  (assert-equal *g* ___))
+  (assert-equal *g* 3))
 
 
 (define-test test-parallel-wait-and-increment
@@ -232,7 +232,7 @@
     (sb-thread:join-thread thread-1)
     (sb-thread:join-thread thread-2)
     (sb-thread:join-thread thread-3)
-    (assert-equal *g* ___)))
+    (assert-equal *g* 1)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -258,7 +258,7 @@
     (sb-thread:join-thread thread-1)
     (sb-thread:join-thread thread-2)
     (sb-thread:join-thread thread-3)
-    (assert-equal *g* ___)))
+    (assert-equal *g* 3)))
 
 ;;;;;;;;;;;;;;;;
 ;; Semaphores ;;
@@ -275,7 +275,7 @@
   (sb-thread:join-thread (sb-thread:make-thread 'semaphore-increments-g :name "S incrementor 1"))
   (sb-thread:join-thread (sb-thread:make-thread 'semaphore-increments-g :name "S incrementor 2"))
   (sb-thread:join-thread (sb-thread:make-thread 'semaphore-increments-g :name "S incrementor 3"))
-  (assert-equal ___ (sb-thread:semaphore-count *g-semaphore*)))
+  (assert-equal 3 (sb-thread:semaphore-count *g-semaphore*)))
 
 
 ;; Semaphores can be used to manage resource allocation, and to trigger
@@ -304,12 +304,12 @@
   (sb-thread:semaphore-count *apples*))
 
 (define-test test-orchard-simulation
-    (assert-equal (num-apples) ___)
+    (assert-equal (num-apples) 0)
   (let ((eater-thread (sb-thread:make-thread 'apple-eater :name "apple eater thread")))
     (let ((grower-thread (sb-thread:make-thread 'apple-grower :name "apple grower thread")))
       (sb-thread:join-thread eater-thread)))
-  (assert-equal (aref *orchard-log* 0) ____)
-  (assert-equal (aref *orchard-log* 1) ____))
+  (assert-equal (aref *orchard-log* 0) "apple grown.")
+  (assert-equal (aref *orchard-log* 1) "apple eaten."))
 
 
 

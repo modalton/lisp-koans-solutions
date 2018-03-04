@@ -46,7 +46,7 @@
    ;; Integers are either fixnum or bignum.
    ;; The boundary between fixnum and bignum is given by the constant:
    ;;   most-positive-fixnum
-   (assert-true (typep 1234567890123456789 'bignum))
+   (assert-true (typep 1234567890123456789 'fixnum))
    (assert-true (typep 12345678901234567890 'bignum))
    (true-or-false? t (typep most-positive-fixnum 'fixnum))
    (true-or-false? nil (typep (+ 1 most-positive-fixnum) 'fixnum)))
