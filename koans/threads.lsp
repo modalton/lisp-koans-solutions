@@ -114,9 +114,9 @@
   (accum-after-time 0.2 2)
   (accum-after-time 0.1 4)
   (setf *after-time-millisec* (get-internal-real-time))
-  (true-or-false? ___ (> (duration-ms) 500))
-  (true-or-false? ___ (< (duration-ms) 700))
-  (assert-equal *accum* ___))
+  (true-or-false?  t (> (duration-ms) 500))
+  (true-or-false? t (< (duration-ms) 700))
+  (assert-equal *accum* 7))
 
 (define-test test-run-in-parallel
     "same program as above, executed in threads.  Sleeps are simultaneous"
@@ -129,9 +129,9 @@
     (sb-thread:join-thread thread-2)
     (sb-thread:join-thread thread-3))
   (setf *after-time-millisec* (get-internal-real-time))
-  (true-or-false? ___ (> (duration-ms) 200))
-  (true-or-false? ___  (< (duration-ms) 400))
-  (assert-equal *accum* ___))
+  (true-or-false? t (> (duration-ms) 200))
+  (true-or-false? t  (< (duration-ms) 400))
+  (assert-equal *accum* 7))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -169,10 +169,10 @@
     "list-all-threads makes a list of all running threads in this lisp.  The sleep
      calls are necessary, as killed threads are not instantly removed from the
      list of all running threads."
-  (assert-equal ___ (length (sb-thread:list-all-threads)))
+  (assert-equal 1 (length (sb-thread:list-all-threads)))
   (kill-thread-if-not-main (spawn-looping-thread "NEVER CATCH ME~!  NYA NYA!"))
   (sleep 0.01)
-  (assert-equal ___ (length (sb-thread:list-all-threads)))
+  (assert-equal nil (length (sb-thread:list-all-threads)))
   (spawn-three-loopers)
   (assert-equal ___ (length (sb-thread:list-all-threads)))
   (kill-spawned-threads)
